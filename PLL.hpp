@@ -3,7 +3,10 @@
 
 class PLL {
 public:
-    PLL(float sampleRate) : m_sampleRate(sampleRate) {
+    PLL(float sampleRate)
+        : m_sampleRate(sampleRate)
+    {
+        setLag(0.1);
     }
 
     enum class PhaseDetectorAlgorithm {
@@ -12,23 +15,28 @@ public:
         PFD
     };
 
-    void setLPFK(float k) {
-        m_lpfK = k;
+    void setLag(float lag)
+    {
+        m_lpfK = std::exp(-1 / (lag * m_sampleRate));
     }
 
-    void setVCOCenterFrequency(float vcoCenterFrequency) {
+    void setVCOCenterFrequency(float vcoCenterFrequency)
+    {
         m_vcoCenterFrequency = vcoCenterFrequency;
     }
 
-    void setVCOFrequencyGain(float vcoFrequencyGain) {
+    void setVCOFrequencyGain(float vcoFrequencyGain)
+    {
         m_vcoFrequencyGain = vcoFrequencyGain;
     }
 
-    void setPhaseDetectorAlgorithm(PhaseDetectorAlgorithm phaseDetectorAlgorithm) {
+    void setPhaseDetectorAlgorithm(PhaseDetectorAlgorithm phaseDetectorAlgorithm)
+    {
         m_phaseDetectorAlgorithm = phaseDetectorAlgorithm;
     }
 
-    float process(float in) {
+    float process(float in)
+    {
         float phaseDetectorOut;
         switch (m_phaseDetectorAlgorithm) {
         case PhaseDetectorAlgorithm::JKFlipFlop:
@@ -69,7 +77,7 @@ public:
 private:
     const float m_sampleRate;
 
-    float m_lpfK = 0.999;
+    float m_lpfK = 0;
     float m_vcoCenterFrequency = 440;
     float m_vcoFrequencyGain = 100;
 
